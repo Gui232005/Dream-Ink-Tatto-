@@ -1,0 +1,12 @@
+.gold-glow {
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.instagram-card {
+    animation: fadeIn 0.6s ease-out forwards;
+}

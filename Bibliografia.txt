@@ -1,0 +1,3 @@
+https://www.geeksforgeeks.org/python/sending-email-using-fastapi-framework-in-python/
+
+https://fastapi.tiangolo.com/tutorial/first-steps/
