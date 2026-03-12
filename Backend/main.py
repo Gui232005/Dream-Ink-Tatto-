@@ -1,9 +1,10 @@
-import httpx
-from fastapi import HTTPException, Query, FastAPI
+import requests
+from fastapi import HTTPException, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
-INSTAGRAM_ACCESS_TOKEN = 'IGAAg9eyAQRgJBZAFo3cEMtWkk2MUhTNlBJV2pMei1LV3NlSERaMGhfQkVzamdrRGQ0Tlh5QjFGbVdxbldIa3VpRzRhMkx1R1dpVjkxY3VDbWQ2T0EwanZAtVWc4SHg1NHdOMGt6SWZAuMVR1Tm9kWEpHZAzJEUXBBWUtwcndmWV9DdwZDZD'
+INSTAGRAM_ACCESS_TOKEN = 'IGAAg9eyAQRgJBZAGFMeXhaLU5WaDhKdURQa0J3NmNNdE1meTB4dXNwQkJPN0Y1bWZA4d3lRRWpHTk5yNFNjTjNFU281Y0xJXzRQUng0TzdxYkc0dWR6ZA3A1WGF3azFHWjN0THh6aHRBX3dqR0Q1aTJ5cHNEU3k4WnFvOXIxQXd1QQZDZD'
+
 app = FastAPI()
 
 app.add_middleware(
@@ -14,38 +15,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
-    return {"message": "Hello to Pedor Tatto Artist backend!"}
+    return {"message": "Hello to Pedro Tatto Artist backend!"}
+
 
 @app.get('/years-experience')
 async def calculateYearsExperience():
     start = 2020
     now = datetime.now().year
+    return now - start
 
-    yearsExperience = now - start
-    return yearsExperience
-
-@app.get("/instagram-posts")
-async def getIntagramPosts(limit: int = 10): # Função para obter posts do Instagram
-    url = "https://graph.instagram.com/me/media"
-
-    params = {
-        "fields": "id,caption,media_type,media_url,permalink,timestamp,thumbnail_url",
-        "access_token": INSTAGRAM_ACCESS_TOKEN,
-        "limit": limit,
-    }
-
-    resp = httpx.get(url, params=params)
-
-    if resp.status_code != 200:
-        print(f"Erro API: {resp.text}")
-        raise HTTPException(status_code=resp.status_code, detail=resp.json())
-
-    return resp.json()
-'''
-Enviar formulario de agendamento
-Galeria de instagram -- FEITO
-Segurança
-Atualização automático de dados
-'''
+#Ver como meto o get posts aqui usando o link que esta no frontend
