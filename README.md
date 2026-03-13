@@ -26,8 +26,5 @@ Redução de manutenção manual através da atualização dinâmica de componen
 ### ⚡ Operações Assíncronas
 Utilização de `fetch` e promessas em JavaScript para garantir que as requisições ao backend e serviços cloud não bloqueiem a performance da página.
 
-### 🛡️ Segurança (Em desenvolvimento)
+### 🛡️ Segurança
 Abstração de lógica sensível no servidor e proteção de fluxos de integração para garantir a robustez da aplicação.
-
----
-*Desenvolvido como um exemplo de arquitetura desacoplada e integração de sistemas cloud.*
