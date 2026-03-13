@@ -1,19 +1,4 @@
-const BACKEND_URL = 'http://127.0.0.1:8000';
-
-function getSafeUrl(rawUrl, allowHttpLocal = false) {
-    try {
-        const parsed = new URL(rawUrl, window.location.origin);
-        if (parsed.protocol === 'https:') {
-            return parsed.href;
-        }
-        if (allowHttpLocal && parsed.protocol === 'http:' && (parsed.hostname === '127.0.0.1' || parsed.hostname === 'localhost')) {
-            return parsed.href;
-        }
-        return null;
-    } catch {
-        return null;
-    }
-}
+const BACKEND_URL = 'https://backend-tatto-git-main-pedro-tatto-artist.vercel.app';
 
 function createStatusNode(message) {
     const status = document.createElement('p');
@@ -23,11 +8,11 @@ function createStatusNode(message) {
 }
 
 function createInstagramCard(post) {
-    const postUrl = getSafeUrl(post?.permalink);
-    const mediaCandidate = post?.media_type === 'VIDEO' ? (post?.thumbnail_url || post?.media_url) : post?.media_url;
-    const mediaUrl = getSafeUrl(mediaCandidate);
+    const postUrl = post.permalink;
+    const mediaUrl = post.media_type === 'VIDEO' ? (post.thumbnail_url || post.media_url) : post.media_url;
 
     if (!postUrl || !mediaUrl) {
+        console.error('Post ou mídia inválida:', post);
         return null;
     }
 
@@ -39,7 +24,7 @@ function createInstagramCard(post) {
 
     const image = document.createElement('img');
     image.src = mediaUrl;
-    image.alt = 'Tattoo Artist Work';
+    image.alt = post.caption || 'Tattoo Artist Work';
     image.loading = 'lazy';
     image.decoding = 'async';
     image.referrerPolicy = 'no-referrer';
@@ -60,71 +45,64 @@ function createInstagramCard(post) {
     return anchor;
 }
 
-function showLoading(form) {
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'A enviar...';
+async function fetchAllPosts() {
+    try {
+        console.log(`Buscando posts em: ${BACKEND_URL}/api/instagram-feed`);
+        const response = await fetch(`${BACKEND_URL}/api/instagram-feed`);
+        if (!response.ok) {
+            throw new Error(`Erro na API do Instagram: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Posts recebidos:', data);
+        return data.data;
+    } catch (error) {
+        console.error('Erro ao buscar posts:', error);
+        return [];
     }
 }
 
-function hideLoading(form, originalText = 'Enviar Pedido') {
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
+async function fetchYearsExperience() {
+    try {
+        console.log(`Buscando anos de experiência em: ${BACKEND_URL}/years-experience`);
+        const response = await fetch(`${BACKEND_URL}/years-experience`);
+        if (!response.ok) throw new Error('Erro ao ligar ao servidor');
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        console.error('Erro ao carregar anos:', err);
+        return '...';
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const yearsElement = document.getElementById('years-value');
     if (yearsElement) {
-        fetch(`${BACKEND_URL}/years-experience`)
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao ligar ao servidor');
-                return response.json();
-            })
-            .then(data => {
-                yearsElement.innerText = data;
-            })
-            .catch(err => {
-                console.error('Erro ao carregar anos:', err);
-                yearsElement.innerText = '5+';
-            });
+        const years = await fetchYearsExperience();
+        yearsElement.innerText = years;
     }
 
     const galleryGrid = document.getElementById('instagram-grid');
     if (galleryGrid) {
-        fetch(`${BACKEND_URL}/api/instagram-feed`, {
-            headers: { Accept: 'application/json' }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error('Erro na API do Instagram');
-                return response.json();
-            })
-            .then(responseData => {
-                const posts = responseData.data;
-                if (!posts || posts.length === 0) {
-                    galleryGrid.replaceChildren(createStatusNode('Nenhum post disponível.'));
-                    return;
-                }
+        const allPosts = await fetchAllPosts();
+        if (!allPosts || allPosts.length === 0) {
+            galleryGrid.replaceChildren(createStatusNode('Erro ao carregar o feed do Instagram.'));
+            return;
+        }
 
-                galleryGrid.replaceChildren();
-                posts.slice(0, 8).forEach(post => {
-                    const card = createInstagramCard(post);
-                    if (card) {
-                        galleryGrid.appendChild(card);
-                    }
-                });
+        const filteredPosts = allPosts.filter(post => post.media_type !== 'VIDEO');
+        console.log('Posts filtrados:', filteredPosts);
 
-                if (galleryGrid.childElementCount === 0) {
-                    galleryGrid.replaceChildren(createStatusNode('Nenhum post válido para mostrar.'));
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                galleryGrid.replaceChildren(createStatusNode('Erro ao carregar o feed do Instagram.'));
-            });
+        galleryGrid.replaceChildren();
+        filteredPosts.forEach(post => {
+            const card = createInstagramCard(post);
+            if (card) {
+                galleryGrid.appendChild(card);
+            }
+        });
+
+        if (galleryGrid.childElementCount === 0) {
+            galleryGrid.replaceChildren(createStatusNode('Nenhum post válido para mostrar.'));
+        }
     }
 
     const bookingForm = document.getElementById('booking-form');
@@ -161,9 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            showLoading(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'A enviar...';
+            }
 
             try {
+                console.log(`Enviando e-mail para: ${BACKEND_URL}/api/send-email`);
                 const response = await fetch(`${BACKEND_URL}/api/send-email`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -186,12 +169,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Erro de ligação:', error);
                 alert("Erro de ligação. Verifique a sua conexão à internet e tente novamente.");
             } finally {
-                hideLoading(form);
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Enviar Pedido';
+                }
             }
         });
     }
 
-    const closeModalBtn = document.getElementById('close-modal-btn');
+    const closeModalBtn = document.getElementProxy();
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
             const modal = document.getElementById('success-modal');
