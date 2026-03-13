@@ -1,4 +1,19 @@
-const BACKEND_URL = 'https://backend-tatto-git-main-pedro-tatto-artist.vercel.app';
+const BACKEND_URL = 'http://127.0.0.1:8000';
+
+function getSafeUrl(rawUrl, allowHttpLocal = false) {
+    try {
+        const parsed = new URL(rawUrl, window.location.origin);
+        if (parsed.protocol === 'https:') {
+            return parsed.href;
+        }
+        if (allowHttpLocal && parsed.protocol === 'http:' && (parsed.hostname === '127.0.0.1' || parsed.hostname === 'localhost')) {
+            return parsed.href;
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
 
 function createStatusNode(message) {
     const status = document.createElement('p');
@@ -8,11 +23,11 @@ function createStatusNode(message) {
 }
 
 function createInstagramCard(post) {
-    const postUrl = post.permalink;
-    const mediaUrl = post.media_type === 'VIDEO' ? (post.thumbnail_url || post.media_url) : post.media_url;
+    const postUrl = getSafeUrl(post?.permalink);
+    const mediaCandidate = post?.media_type === 'VIDEO' ? (post?.thumbnail_url || post?.media_url) : post?.media_url;
+    const mediaUrl = getSafeUrl(mediaCandidate);
 
     if (!postUrl || !mediaUrl) {
-        console.error('Post ou mídia inválida:', post);
         return null;
     }
 
@@ -24,7 +39,7 @@ function createInstagramCard(post) {
 
     const image = document.createElement('img');
     image.src = mediaUrl;
-    image.alt = post.caption || 'Tattoo Artist Work';
+    image.alt = 'Tattoo Artist Work';
     image.loading = 'lazy';
     image.decoding = 'async';
     image.referrerPolicy = 'no-referrer';
@@ -45,52 +60,63 @@ function createInstagramCard(post) {
     return anchor;
 }
 
-async function fetchAllPosts() {
-    try {
-        console.log(`Buscando posts em: ${BACKEND_URL}/api/instagram-feed`);
-        const response = await fetch(`${BACKEND_URL}/api/instagram-feed`);
-        if (!response.ok) {
-            throw new Error(`Erro na API do Instagram: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log('Posts recebidos:', data);
-        return data.data;
-    } catch (error) {
-        console.error('Erro ao buscar posts:', error);
-        return [];
+function showLoading(form) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'A enviar...';
     }
 }
 
-async function fetchYearsExperience() {
+function hideLoading(form, originalText = 'Enviar Pedido') {
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    }
+}
+
+async function fetchAllPosts() {
     try {
-        console.log(`Buscando anos de experiência em: ${BACKEND_URL}/years-experience`);
-        const response = await fetch(`${BACKEND_URL}/years-experience`);
-        if (!response.ok) throw new Error('Erro ao ligar ao servidor');
+        const response = await fetch(`${BACKEND_URL}/api/instagram-feed`);
+        if (!response.ok) throw new Error('Erro na API do Instagram');
         const data = await response.json();
-        return data;
-    } catch (err) {
-        console.error('Erro ao carregar anos:', err);
-        return '...';
+        return data.data;
+    } catch (error) {
+        console.error('Erro:', error);
+        return [];
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     const yearsElement = document.getElementById('years-value');
     if (yearsElement) {
-        const years = await fetchYearsExperience();
-        yearsElement.innerText = years;
+        fetch(`${BACKEND_URL}/years-experience`)
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao ligar ao servidor');
+                return response.json();
+            })
+            .then(data => {
+                yearsElement.innerText = data;
+            })
+            .catch(err => {
+                console.error('Erro ao carregar anos:', err);
+                yearsElement.innerText = '5+';
+            });
     }
 
     const galleryGrid = document.getElementById('instagram-grid');
     if (galleryGrid) {
         const allPosts = await fetchAllPosts();
         if (!allPosts || allPosts.length === 0) {
-            galleryGrid.replaceChildren(createStatusNode('Erro ao carregar o feed do Instagram.'));
+            galleryGrid.replaceChildren(createStatusNode('Nenhum post disponível.'));
             return;
         }
 
-        const filteredPosts = allPosts.filter(post => post.media_type !== 'VIDEO');
-        console.log('Posts filtrados:', filteredPosts);
+        // Filtrar apenas posts que não são reels
+        const filteredPosts = allPosts.filter(post => {
+            return post.type !== 'reel' && post.media_type !== 'VIDEO';
+        });
 
         galleryGrid.replaceChildren();
         filteredPosts.forEach(post => {
@@ -139,14 +165,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            const submitButton = form.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'A enviar...';
-            }
+            showLoading(form);
 
             try {
-                console.log(`Enviando e-mail para: ${BACKEND_URL}/api/send-email`);
                 const response = await fetch(`${BACKEND_URL}/api/send-email`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -169,15 +190,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('Erro de ligação:', error);
                 alert("Erro de ligação. Verifique a sua conexão à internet e tente novamente.");
             } finally {
-                if (submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Enviar Pedido';
-                }
+                hideLoading(form);
             }
         });
     }
 
-    const closeModalBtn = document.getElementProxy();
+    const closeModalBtn = document.getElementById('close-modal-btn');
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
             const modal = document.getElementById('success-modal');
