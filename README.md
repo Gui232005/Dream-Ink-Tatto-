@@ -14,7 +14,7 @@ Caso queira aceder o link do site é: https://dreaminktattoo.com/
 ## 🛠️ Stack Tecnológica
 
 * **Backend:** Python com **FastAPI** (Processamento de APIs e lógica de negócio).
-* **Frontend:** HTML5, Tailwind CSS, Alpine.js e JavaScript Assíncrono.
+* **Frontend:** HTML5, Tailwind CSS e JavaScript.
 * **Integrações:** EmailJS (Service & Template) e Instagram Graph API.
 
 ## 🧠 Áreas de Foco em Engenharia de Software
