@@ -110,25 +110,111 @@ document.addEventListener('DOMContentLoaded', async () => {
         const allPosts = await fetchAllPosts();
         if (!allPosts || allPosts.length === 0) {
             galleryGrid.replaceChildren(createStatusNode('Nenhum post disponível.'));
-            return;
-        }
+        } else {
+            // Filtrar apenas posts que não são reels
+            const filteredPosts = allPosts.filter(post => {
+                return post.type !== 'reel' && post.media_type !== 'VIDEO';
+            });
 
-        // Filtrar apenas posts que não são reels
-        const filteredPosts = allPosts.filter(post => {
-            return post.type !== 'reel' && post.media_type !== 'VIDEO';
-        });
+            galleryGrid.replaceChildren();
+            filteredPosts.forEach(post => {
+                const card = createInstagramCard(post);
+                if (card) {
+                    galleryGrid.appendChild(card);
+                }
+            });
 
-        galleryGrid.replaceChildren();
-        filteredPosts.forEach(post => {
-            const card = createInstagramCard(post);
-            if (card) {
-                galleryGrid.appendChild(card);
+            if (galleryGrid.childElementCount === 0) {
+                galleryGrid.replaceChildren(createStatusNode('Nenhum post válido para mostrar.'));
             }
+        }
+    }
+
+    const personalidadesCarousel = document.getElementById('personalidades-carousel');
+
+    if (personalidadesCarousel) {
+        const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const autoplayState = {
+            paused: reduceMotionQuery.matches,
+            frameId: null,
+            lastTimestamp: 0
+        };
+
+        const createLoop = () => {
+            if (personalidadesCarousel.dataset.loopReady === 'true') {
+                return;
+            }
+
+            const cards = Array.from(personalidadesCarousel.querySelectorAll('.personalidade-card'));
+            cards.forEach(card => {
+                const clone = card.cloneNode(true);
+                clone.setAttribute('aria-hidden', 'true');
+                clone.tabIndex = -1;
+                personalidadesCarousel.appendChild(clone);
+            });
+
+            personalidadesCarousel.dataset.loopReady = 'true';
+        };
+
+        createLoop();
+
+        const loopWidth = () => personalidadesCarousel.scrollWidth / 2;
+
+        const tick = (timestamp) => {
+            if (!autoplayState.lastTimestamp) {
+                autoplayState.lastTimestamp = timestamp;
+            }
+
+            const delta = Math.min(timestamp - autoplayState.lastTimestamp, 32);
+            autoplayState.lastTimestamp = timestamp;
+
+            if (!autoplayState.paused && !document.hidden) {
+                personalidadesCarousel.scrollLeft += delta * 0.04;
+
+                const halfWidth = loopWidth();
+                if (halfWidth > 0 && personalidadesCarousel.scrollLeft >= halfWidth) {
+                    personalidadesCarousel.scrollLeft -= halfWidth;
+                }
+            }
+
+            autoplayState.frameId = window.requestAnimationFrame(tick);
+        };
+
+        const pauseAutoplay = () => {
+            autoplayState.paused = true;
+        };
+
+        const resumeAutoplay = () => {
+            autoplayState.paused = reduceMotionQuery.matches || document.hidden;
+            autoplayState.lastTimestamp = 0;
+        };
+
+        personalidadesCarousel.addEventListener('pointerenter', pauseAutoplay);
+        personalidadesCarousel.addEventListener('pointerdown', pauseAutoplay);
+        personalidadesCarousel.addEventListener('pointerleave', resumeAutoplay);
+        personalidadesCarousel.addEventListener('focusin', pauseAutoplay);
+        personalidadesCarousel.addEventListener('focusout', resumeAutoplay);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                pauseAutoplay();
+                return;
+            }
+
+            resumeAutoplay();
         });
 
-        if (galleryGrid.childElementCount === 0) {
-            galleryGrid.replaceChildren(createStatusNode('Nenhum post válido para mostrar.'));
+        if (typeof reduceMotionQuery.addEventListener === 'function') {
+            reduceMotionQuery.addEventListener('change', () => {
+                if (reduceMotionQuery.matches) {
+                    pauseAutoplay();
+                } else {
+                    resumeAutoplay();
+                }
+            });
         }
+
+        autoplayState.frameId = window.requestAnimationFrame(tick);
     }
 
     const bookingForm = document.getElementById('booking-form');

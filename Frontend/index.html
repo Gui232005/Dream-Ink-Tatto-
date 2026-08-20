@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dream Ink Tattoo | Studio Premium</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://images.unsplash.com *.cdninstagram.com; connect-src 'self' https://backend-tatto-git-main-pedro-tatto-artist.vercel.app; media-src 'self' https: data:; manifest-src 'self'; worker-src 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'self' https://www.google.com https://maps.google.com; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://images.unsplash.com *.cdninstagram.com; connect-src 'self' https://backend-tatto-git-main-pedro-tatto-artist.vercel.app; media-src 'self' https: data:; manifest-src 'self'; worker-src 'self';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
     <link
@@ -153,6 +153,106 @@
             </div>
         </section>
 
+        <section id="personalidades" class="py-24 bg-brand-card border-y border-white/5 relative overflow-hidden">
+            <div class="absolute -top-24 left-0 w-80 h-80 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+                    <div class="max-w-3xl">
+                        <h2 class="text-brand-gold text-sm font-bold uppercase tracking-widest mb-3">Personalidades
+                            Tatuadas</h2>
+                        <h3 class="text-4xl md:text-5xl font-display font-bold text-white uppercase leading-tight mb-4">
+                            Figuras conhecidas que passaram pelo estúdio</h3>
+                    </div>
+                </div>
+
+                <div class="relative carousel-shell">
+                    <div class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-brand-card to-transparent pointer-events-none z-10"></div>
+                    <div class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-brand-card to-transparent pointer-events-none z-10"></div>
+
+                    <div id="personalidades-carousel" tabindex="0" aria-label="Carrossel de personalidades tatuadas"
+                        class="personalidades-carousel flex gap-6 overflow-x-auto pb-4 outline-none">
+                        <article class="personalidade-card snap-center shrink-0 w-[88%] sm:w-[66%] lg:w-[44%] xl:w-[34%] bg-black/40 border border-white/10 overflow-hidden group">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200"
+                                    alt="Personalidade tatuada 1"
+                                    class="w-full h-[420px] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                                    <div>
+                                        <p class="text-brand-gold text-xs uppercase tracking-[0.3em] mb-2">Músico</p>
+                                        <h4 class="text-3xl font-display font-bold text-white uppercase">Nome da Personalidade</h4>
+                                    </div>
+                                    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-300 border border-white/15 px-3 py-2 bg-black/40 backdrop-blur-sm">2026</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-400 leading-relaxed">Substitui este bloco pelo nome real, sessão feita e tipo
+                                    de tatuagem realizada no estúdio.</p>
+                            </div>
+                        </article>
+
+                        <article class="personalidade-card snap-center shrink-0 w-[88%] sm:w-[66%] lg:w-[44%] xl:w-[34%] bg-black/40 border border-white/10 overflow-hidden group">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1200"
+                                    alt="Personalidade tatuada 2"
+                                    class="w-full h-[420px] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                                    <div>
+                                        <p class="text-brand-gold text-xs uppercase tracking-[0.3em] mb-2">Ator / Influencer</p>
+                                        <h4 class="text-3xl font-display font-bold text-white uppercase">Nome da Personalidade</h4>
+                                    </div>
+                                    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-300 border border-white/15 px-3 py-2 bg-black/40 backdrop-blur-sm">VIP</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-400 leading-relaxed">Usa este espaço para destacar o estilo da peça e a
+                                    ligação da pessoa ao estúdio.</p>
+                            </div>
+                        </article>
+
+                        <article class="personalidade-card snap-center shrink-0 w-[88%] sm:w-[66%] lg:w-[44%] xl:w-[34%] bg-black/40 border border-white/10 overflow-hidden group">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200"
+                                    alt="Personalidade tatuada 3"
+                                    class="w-full h-[420px] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                                    <div>
+                                        <p class="text-brand-gold text-xs uppercase tracking-[0.3em] mb-2">Modelo / Artista</p>
+                                        <h4 class="text-3xl font-display font-bold text-white uppercase">Nome da Personalidade</h4>
+                                    </div>
+                                    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-300 border border-white/15 px-3 py-2 bg-black/40 backdrop-blur-sm">Signature</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-400 leading-relaxed">Este cartão pode mostrar um projeto de assinatura, retrato ou blackwork exclusivo.</p>
+                            </div>
+                        </article>
+
+                        <article class="personalidade-card snap-center shrink-0 w-[88%] sm:w-[66%] lg:w-[44%] xl:w-[34%] bg-black/40 border border-white/10 overflow-hidden group">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200"
+                                    alt="Personalidade tatuada 4"
+                                    class="w-full h-[420px] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                                    <div>
+                                        <p class="text-brand-gold text-xs uppercase tracking-[0.3em] mb-2">Desportista</p>
+                                        <h4 class="text-3xl font-display font-bold text-white uppercase">Nome da Personalidade</h4>
+                                    </div>
+                                    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-300 border border-white/15 px-3 py-2 bg-black/40 backdrop-blur-sm">Exclusive</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-400 leading-relaxed">Adiciona aqui mais personalidades conforme forem tatuadas, mantendo o mesmo padrão visual.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="gallery" class="py-24 bg-black border-y border-white/5">
             <div class="container mx-auto px-6">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
@@ -187,6 +287,34 @@
                             <div>
                                 <h4 class="text-white font-bold uppercase tracking-wide">Localização</h4>
                                 <p class="text-gray-500">Rua Doutor Almiro Vale, n10 R/C Esq. 3460 - 579 Tondela</p>
+                            </div>
+                        </div>
+
+                        <div class="location-map relative overflow-hidden border border-white/10 bg-black/40 shadow-2xl">
+                            <iframe
+                                title="Mapa da localização da Dream Ink Tattoo"
+                                src="https://www.google.com/maps?q=Rua%20Doutor%20Almiro%20Vale%2C%20n10%20R%2FC%20Esq.%203460-579%20Tondela&z=17&output=embed"
+                                class="location-map__frame w-full h-[320px] md:h-[360px]"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen>
+                            </iframe>
+                            <div class="location-map__pin" aria-hidden="true">
+                                <span class="location-map__pin-ring"></span>
+                                <span class="location-map__pin-core">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </span>
+                            </div>
+                            <div class="absolute left-4 top-4 z-10 rounded-full border border-white/10 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.25em] text-gray-200 backdrop-blur-sm">
+                                Sempre Disponível
+                            </div>
+                            <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/70 to-transparent">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Rua%20Doutor%20Almiro%20Vale%2C%20n10%20R%2FC%20Esq.%203460-579%20Tondela"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="inline-flex items-center gap-2 bg-brand-gold text-black px-4 py-3 text-xs font-bold uppercase tracking-[0.2em] hover:bg-brand-goldhover transition">
+                                    <i class="fa-solid fa-route"></i>
+                                    Direções
+                                </a>
                             </div>
                         </div>
                     </div>
